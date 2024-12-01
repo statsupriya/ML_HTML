@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sentiment Analysis with Natural Language Processing</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; }
+        h1, h2, h3 { color: #007BFF; }
+        img { max-width: 100%; height: auto; }
+        .code-block { background: #f4f4f4; padding: 10px; border-left: 5px solid #007BFF; font-family: monospace; }
+        .note { font-style: italic; color: gray; }
+        .github-link { text-decoration: none; color: #ffffff; background-color: #007BFF; padding: 10px 15px; border-radius: 5px; }
+        .github-link:hover { background-color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Sentiment Analysis with Natural Language Processing</h1>
+            <p>An exploration of how NLP techniques classify text data into positive, negative, or neutral sentiments using machine learning.</p>
+        </header>
+
+        <section id="introduction">
+            <h2>Introduction</h2>
+            <p>Sentiment analysis is a powerful application of Natural Language Processing (NLP) that helps organizations understand public opinion, customer feedback, and brand sentiment. By analyzing text data, machine learning models can classify sentiments as positive, negative, or neutral, offering actionable insights.</p>
+            <p>This report demonstrates sentiment analysis using Python's <strong>nltk</strong> library and built-in datasets.</p>
+        </section>
+
+        <section id="sentiment-analysis">
+            <h2>How Sentiment Analysis Works</h2>
+            <p>Sentiment analysis involves several steps:</p>
+            <ul>
+                <li><strong>Data Collection:</strong> Gathering text data, such as product reviews or social media posts.</li>
+                <li><strong>Text Preprocessing:</strong> Cleaning the data by removing stopwords, punctuation, and special characters.</li>
+                <li><strong>Feature Extraction:</strong> Converting text into numerical representations using techniques like Bag of Words or TF-IDF.</li>
+                <li><strong>Model Training:</strong> Using machine learning algorithms (e.g., Naive Bayes) to classify text data into sentiment categories.</li>
+            </ul>
+            <img src="Screenshot 2024-12-01 140325.png" alt="Sentiment Analysis Workflow" title="Sentiment Analysis Workflow">
+            <p class="note">Figure: Working of sentiment classification.</p>
+
+            <h3>Features Used in Sentiment Analysis</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Description</th>
+                        <th>Example Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Tokens</td>
+                        <td>Individual words extracted from text data.</td>
+                        <td>"good", "bad", "amazing"</td>
+                    </tr>
+                    <tr>
+                        <td>Word Frequency</td>
+                        <td>Counts the occurrence of each word in the text.</td>
+                        <td>good: 3, bad: 1</td>
+                    </tr>
+                    <tr>
+                        <td>Bigrams</td>
+                        <td>Pairs of consecutive words used to capture context.</td>
+                        <td>"very good", "not bad"</td>
+                    </tr>
+                    <tr>
+                        <td>TF-IDF</td>
+                        <td>Measures the importance of a word relative to the dataset.</td>
+                        <td>good: 0.45, bad: 0.10</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="implementation">
+            <h2>Code Implementation</h2>
+            <p>The following Python code demonstrates sentiment analysis using the built-in <strong>movie_reviews</strong> dataset from `nltk`:</p>
+            <div class="code-block">
+<pre>
+# Import necessary libraries
+import nltk
+from nltk.corpus import movie_reviews
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.metrics import accuracy_score, classification_report
+
+# Download the dataset (first-time use)
+nltk.download('movie_reviews')
+
+# Load movie reviews dataset
+reviews = [(list(movie_reviews.words(fileid)), category)
+           for category in movie_reviews.categories()
+           for fileid in movie_reviews.fileids(category)]
+
+# Separate text and labels
+texts = [" ".join(words) for words, label in reviews]
+labels = [label for words, label in reviews]
+
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(texts, labels, test_size=0.2, random_state=42)
+
+# Convert text data into numerical features
+vectorizer = CountVectorizer()
+X_train_features = vectorizer.fit_transform(X_train)
+X_test_features = vectorizer.transform(X_test)
+
+# Train a Naive Bayes model
+model = MultinomialNB()
+model.fit(X_train_features, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test_features)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Accuracy: {accuracy:.2f}")
+print(classification_report(y_test, y_pred))
+</pre>
+            </div>
+            <p>This code uses Naive Bayes for sentiment classification. It evaluates the model using accuracy and detailed performance metrics like precision, recall, and F1-score.</p>
+        </section>
+
+        <section id="results">
+            <h2>Results and Analysis</h2>
+            <p>The Naive Bayes model achieved an accuracy of approximately 85%. The confusion matrix and classification report revealed the following insights:</p>
+            <ul>
+                <li><strong>High Precision:</strong> Positive sentiments were correctly classified with minimal false positives.</li>
+                <li><strong>Strong Recall:</strong> Negative sentiments were accurately detected, ensuring comprehensive sentiment coverage.</li>
+            </ul>
+            <img src="Screenshot 2024-12-01 140026.png" alt="Sentiment Analysis Results" title="Sentiment Analysis Results">
+            <p class="note">Figure: Visualization of model performance metrics for sentiment classification.</p>
+        </section>
+
+        <section id="applications">
+            <h2>Applications</h2>
+            <ul>
+                <li><strong>Customer Feedback:</strong> Analyzing reviews to identify customer satisfaction and areas for improvement.</li>
+                <li><strong>Brand Monitoring:</strong> Tracking social media sentiment to gauge public opinion.</li>
+                <li><strong>Market Research:</strong> Understanding consumer preferences and trends from text data.</li>
+            </ul>
+        </section>
+
+        <section id="github">
+            <h2>GitHub Repository</h2>
+            <p>Explore the complete code for sentiment analysis on GitHub:</p>
+            <a href="https://github.com/statsupriya/ML-Repository" target="_blank" class="github-link">View on GitHub</a>
+        </section>
+
+        <section id="conclusion">
+            <h2>Conclusion</h2>
+            <p>Sentiment analysis with NLP and machine learning offers a robust solution for extracting insights from text data. Using the built-in <strong>movie_reviews</strong> dataset, this report demonstrates how Naive Bayes can classify sentiments with high accuracy.</p>
+            <p>Future work could explore advanced models like Support Vector Machines (SVM) or deep learning techniques like LSTMs for improved sentiment classification.</p>
+        </section>
+    </div>
+</body>
+</html>
